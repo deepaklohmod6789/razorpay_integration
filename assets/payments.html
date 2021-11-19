@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width">
+<head><title>RazorPay Web Payment</title></head>
+<body>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+   const queryString = window.location.search;
+   const urlParams = new URLSearchParams(queryString);
+   const price = urlParams.get('price');
+   const email = urlParams.get('email');
+   const phone = urlParams.get('phone');
+   const orderId = urlParams.get('id');
+   const key = urlParams.get('key');
+
+      options = {
+         "key": key,
+          "amount": price*100, "currency": "INR",
+          "name":"Deepak Lohmod",
+          "order_id": orderId,
+          "description": "Payment for your product",
+          "handler": function (response){
+             window.parent.postMessage({"state":"SUCCESS","paymentId":response.razorpay_payment_id},"*");
+          },
+          "prefill": {
+             "email":email,
+             "contact":phone,
+           },
+           "notes": {
+             "address": "Autofy"
+          },
+          "theme": {
+             'color': '#21BF75',
+          },
+          "modal": {
+            "ondismiss": function(){
+               window.parent.postMessage("MODAL_CLOSED","*");
+            }
+          }
+       };
+       var rzp1 = new Razorpay(options);
+       window.onload = function(e){
+          rzp1.open();
+          e.preventDefault();
+       }
+
+     </script>
+</body>
+</html>
